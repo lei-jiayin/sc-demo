@@ -1,0 +1,18 @@
+#默认端口8761
+server:
+  port: 10086
+spring:
+  application:
+    name: eureka-server
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+    register-with-eureka: false
+    fetch-registry: false
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+  server:
+    #每隔六十秒失效剔除
+    eviction-interval-timer-in-ms: 30000

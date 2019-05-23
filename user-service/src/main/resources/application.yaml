@@ -6,5 +6,17 @@ spring:
     url: jdbc:mysql://192.168.1.248/xw_taes
     username: root
     password: freecg
+  application:
+    name: user-service
 mybatis:
   type-aliases-package: cn.xw.user.pojo
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka/,http://127.0.0.1:10087/eureka
+  instance:
+    #三十秒一次心跳
+    lease-renewal-interval-in-seconds: 30
+    #超过九十即认为挂机
+    lease-expiration-duration-in-seconds: 90
