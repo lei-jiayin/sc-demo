@@ -1,6 +1,9 @@
 package cn.xw.consurmer.controller;
 
 import cn.xw.consurmer.pojo.User;
+import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -19,10 +22,35 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("consurmer")
+@DefaultProperties(defaultFallback = "defaultFallback")//通用降级
 public class ConsurmerController {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    /*----------------------------------熔断示例-------------------------------------------*/
+    @GetMapping("{id}")
+    //@HystrixCommand(fallbackMethod = "queryByIdFallback")//失败熔断指令 开启降级
+    /*@HystrixCommand(commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",value = "3000")
+    })*///寻找默认回滚方法
+    @HystrixCommand
+    public String queryById(@PathVariable("id") Integer id){
+        String url = "http://user-service/user/" + id;
+        String user = restTemplate.getForObject(url, String.class);
+        return user;
+    }
+
+    public String queryByIdFallback(Integer id){
+        return "不好意思，服务器太拥挤了！";
+    }
+
+    public String defaultFallback(){
+        return "不好意思，服务器太拥挤了！";
+    }
+    /*-------------------------------------------------------------------------------------*/
+
+
 
 //    @Autowired
 //    private DiscoveryClient discoveryClient;
@@ -30,7 +58,7 @@ public class ConsurmerController {
 //    @Autowired
 //    private RibbonLoadBalancerClient client;
 
-    @GetMapping("{id}")
+    /*@GetMapping("{id}")
     public User queryById(@PathVariable("id") Integer id){
         //动态拉取服务地址
         //获取该服务下的所有实例
@@ -44,5 +72,5 @@ public class ConsurmerController {
         String url = "http://user-service/user/" + id;
         User user = restTemplate.getForObject(url, User.class);
         return user;
-    }
+    }*/
 }

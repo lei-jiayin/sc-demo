@@ -7,10 +7,24 @@ eureka:
   client:
     service-url:
       #高可用配置
-      defaultZone: http://127.0.0.1:10086/eureka/,http://127.0.0.1:10087/eureka
+      defaultZone: http://127.0.0.1:10086/eureka/ #,http://127.0.0.1:10087/eureka
     #拉取服务
     registry-fetch-interval-seconds: 30
 #负载均衡算法规则定义随机 默认轮询
 user-service:
   ribbon:
     NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+
+#延时熔断的全局配置
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+    user-service:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
