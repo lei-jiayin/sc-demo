@@ -1,20 +1,13 @@
 package cn.xw.consurmer.controller;
 
+import cn.xw.consurmer.client.UserClient;
 import cn.xw.consurmer.pojo.User;
-import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.netflix.ribbon.RibbonLoadBalancerClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 
 /**
  * @author xw
@@ -22,24 +15,49 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("consurmer")
-@DefaultProperties(defaultFallback = "defaultFallback")//通用降级
+//@DefaultProperties(defaultFallback = "defaultFallback")//通用降级
 public class ConsurmerController {
 
+    //在使用feign后可以不用注入
+//    @Autowired
+//    private RestTemplate restTemplate;
+
+
+    //使用feign后
     @Autowired
-    private RestTemplate restTemplate;
+    private UserClient userClient;
+
+    /**
+     * 体验新的 feign 框架
+     * @param id
+     * @return
+     */
+    @GetMapping("{id}")
+    public User findById(@PathVariable("id") Integer id){
+        User user = userClient.queryById(id);
+        return user;
+    }
+
 
     /*----------------------------------熔断示例-------------------------------------------*/
-    @GetMapping("{id}")
+//    @GetMapping("{id}")
     //@HystrixCommand(fallbackMethod = "queryByIdFallback")//失败熔断指令 开启降级
     /*@HystrixCommand(commandProperties = {
             @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",value = "3000")
     })*///寻找默认回滚方法
-    @HystrixCommand
-    public String queryById(@PathVariable("id") Integer id){
-        String url = "http://user-service/user/" + id;
-        String user = restTemplate.getForObject(url, String.class);
-        return user;
-    }
+//    @HystrixCommand(commandProperties = {
+//            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold",value = "10"),//触发熔断的最小请求次数 20
+//            @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds",value = "10000"),//休眠时长 5000
+//            @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage",value = "60")//触发熔断的失败请求最小占比，默认50%
+//    })
+//    public String queryById(@PathVariable("id") Integer id){
+//        if (id % 2 == 0){
+//            throw new RuntimeException("");
+//        }
+//        String url = "http://user-service/user/" + id;
+//        String user = restTemplate.getForObject(url, String.class);
+//        return user;
+//    }
 
     public String queryByIdFallback(Integer id){
         return "不好意思，服务器太拥挤了！";

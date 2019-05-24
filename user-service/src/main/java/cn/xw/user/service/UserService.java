@@ -22,11 +22,11 @@ public class UserService {
      * @return
      */
     public User queryById(Integer id){
-        try {
-            Thread.sleep(2000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(2000L);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         return userMapper.selectByPrimaryKey(id);
     }
 }

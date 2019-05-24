@@ -11,20 +11,44 @@ eureka:
     #拉取服务
     registry-fetch-interval-seconds: 30
 #负载均衡算法规则定义随机 默认轮询
-user-service:
-  ribbon:
-    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+#user-service:
+#  ribbon:
+#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
 
 #延时熔断的全局配置
-hystrix:
-  command:
-    default:
-      execution:
-        isolation:
-          thread:
-            timeoutInMilliseconds: 3000
-    user-service:
-      execution:
-        isolation:
-          thread:
-            timeoutInMilliseconds: 3000
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 3000
+#    user-service:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 3000
+
+#  feign.hystrix.enabled: true
+#  hystrix 熔断机制
+#  hystrix:
+#    shareSecurityContext: true
+#    command:
+#      default:
+#        circuitBreaker:
+#          sleepWindowInMilliseconds: 100000
+#          forceClosed: true
+#        execution:
+#          isolation:
+#            thread:
+#              timeoutInMilliseconds: 600000
+
+#开启feign的hystrix的熔断
+feign:
+  hystrix:
+    enabled: true
+# feign中的请求处理的超时时间 超时的时候设置
+#ribbon:
+#  ReadTimeout: 120000
+##请求连接的超时时间
+#  ConnectTimeout: 30000
