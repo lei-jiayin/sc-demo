@@ -3,11 +3,11 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.168.1.248/xw_taes
-#    url: jdbc:mysql://localhost:3306/xw_taes
+#    url: jdbc:mysql://192.168.1.248/xw_taes
+    url: jdbc:mysql://localhost:3306/xw_taes
     username: root
-    password: freecg
-#    password: root
+#    password: freecg
+    password: root
   application:
     name: user-service
 mybatis:

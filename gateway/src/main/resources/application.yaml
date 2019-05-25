@@ -8,6 +8,20 @@ eureka:
     service-url:
       defaultZone: http://127.0.0.1:10086/eureka
 
+#Zuul中已经启动了熔断器
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 6000
+#Zuul的超时处理 ribbon的超时时长，真实值是（read + connect）* 2 必须小于hystrix时长
+ribbon:
+  ReadTimeout: 500
+#请求连接的超时时间
+  ConnectTimeout: 2000
+
 #未忽略前缀的设置
 #zuul:
 #  routes:
